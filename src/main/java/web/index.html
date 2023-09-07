@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employees</title>
+    <style>
+        section{
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <header></header>
+
+    <main>
+        <!-- Snippet -->
+        <section class="flex flex-col justify-center antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
+            <div class="h-full">
+                <div class="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+                    <header class="px-5 py-4 border-b border-gray-100">
+                        <h2 class="font-semibold text-gray-800">Employees (<span id="employeesCount">0</span>)</h2>
+                    </header>
+                    <div class="p-3">
+                        <div class="overflow-x-auto">
+                            <div id="employees"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer></footer>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        fetch('http://localhost:8080/employees/').then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok!');
+            }
+            return response.json();
+        }).then(data => {
+            let employees = document.getElementById('employees');
+            let table = '<table class="table-auto w-full">';
+
+            table += '' +
+                '<thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">' +
+                    '<tr>' +
+                        '<th class="p-2 whitespace-nowrap"><div class="font-semibold text-left">ID</div></th>' +
+                        '<th class="p-2 whitespace-nowrap"><div class="font-semibold text-left">Name</div></th>' +
+                        '<th class="p-2 whitespace-nowrap"><div class="font-semibold text-left">Email</div></th>' +
+                        '<th class="p-2 whitespace-nowrap"><div class="font-semibold text-left">Country</div></th>' +
+                    '</tr>' +
+                '</thead><tbody class="text-sm divide-y divide-gray-100">';
+            data.forEach(employee => {
+                table += '<tr>';
+                    table += '<td class="p-2 whitespace-nowrap"><div class="font-medium text-gray-800">' + employee.id + '</div></td>';
+                    table += '<td class="p-2 whitespace-nowrap"><div class="text-left">' + employee.name + '</div></td>';
+                    table += '<td class="p-2 whitespace-nowrap"><div class="text-left font-medium text-green-500"><a href="mailto:' + employee.email + '">' + employee.email + '</a></div></td>';
+                    table += '<td class="p-2 whitespace-nowrap"><div class="text-text">' + employee.country + '</div></td>';
+                table += '</tr>';
+            });
+            table += '</tbody></table>';
+            employees.innerHTML = table;
+            console.log(data)
+
+            let employeesCount = document.getElementById('employeesCount');
+            employeesCount.innerHTML = data.length
+        }).catch(error => console.log('Error while retrieving data:', error));
+    </script>
+</body>
+</html>
